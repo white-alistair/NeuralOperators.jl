@@ -46,7 +46,7 @@ struct SoftGating <: AbstractExplicitLayer
   channels::Int
 end
 
-function initialparameters(::AbstractRNG, l::SoftGating)
+function Lux.initialparameters(::AbstractRNG, l::SoftGating)
   return (weight = ones(Float32, 1, 1, l.channels, 1),)
 end
 
@@ -77,12 +77,12 @@ function FourierNeuralOperator(
   channel_mlp_expansion=0.5,
 )
   lifting = Chain(
-      Conv((1, 1), in_channels => lifting_channel_ratio * hidden_channels, activation),
-      Conv((1, 1), lifting_channel_ratio * hidden_channels => hidden_channels, activation),
+      Conv((1, 1), in_channels => Int(lifting_channel_ratio * hidden_channels), activation),
+      Conv((1, 1), Int(lifting_channel_ratio * hidden_channels) => hidden_channels, activation),
   )
   projection = Chain(
-      Conv((1, 1), hidden_channels => projection_channel_ratio * hidden_channels, activation),
-      Conv((1, 1), projection_channel_ratio * hidden_channels => out_channels, activation),
+      Conv((1, 1), hidden_channels => Int(projection_channel_ratio * hidden_channels), activation),
+      Conv((1, 1), Int(projection_channel_ratio * hidden_channels) => out_channels, activation),
   )
   fno_blocks = Chain([
       Chain(
